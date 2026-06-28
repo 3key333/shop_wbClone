@@ -1,0 +1,40 @@
+.authPage{
+    height: 100%;
+    .authPageInner{
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .card{
+            background-color: #7e1181;
+            padding: 20px 40px;
+            border-radius: 10px;
+            .cardInner{
+                flex-direction: column;
+                display: flex;
+                gap: 100px;
+
+                .choise{
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+
+                    & > button{
+                        padding: 10px 0px;
+                        width: 100px;
+                        background-color: #ffff0000;
+                        border-radius: 5px;
+                        border: 2px #fff solid;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        &:hover{
+                            transform: scale(1.02);
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+}
