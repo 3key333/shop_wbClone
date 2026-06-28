@@ -12,25 +12,19 @@ export const validateNewUserRequestBody = (data: {name: string, password: string
 
 }
 
-export const authToken = (req: Request<{},{},{name: string}>, res: Response, next: NextFunction) => {
+export const authToken = (req: Request, res: Response, next: NextFunction) => {
 
-    const authHeader = req.headers.authorization // Bearer xxx
-    // Это чтение HTTP-заголовка Authorization из входящего запроса.
-    // Обычно клиент шлет: Authorization: Bearer <token>.
-    // В Express это строка или undefined, если заголовка нет.
+    const token = req.cookies?.token
 
-    if(!authHeader?.startsWith('Bearer ')){
-        //строка ничинается с 'Bearer' ?
-        return res.status(401).send('Требуется авторизация')
+    if(!token){
+        return res.status(401).send('Не авторизован')
     }
-
-    const token = authHeader.slice(7, authHeader.length) // убираем 'Bearer'
 
     try {
 
         const payload = jwt.verify(token, String(process.env.JWT_SECRET)) as {name: string}
         // Если токен корректный — возвращает payload (данные внутри токена).
-
+        res.locals.user = payload
         next() // чтобы чепочка не остановилась просто идем дальше поо к
         
     } catch (error) {

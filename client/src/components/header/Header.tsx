@@ -2,17 +2,12 @@ import { useEffect, useState } from 'react'
 import style from './header.module.scss'
 import type { IUserEntity } from '../../types'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 
 export const Header = () => {
 
     const navigate = useNavigate()
-
-    const token = localStorage.getItem('token')
-
-    if(!token) { 
-        navigate('/')
-    }
 
     const [userInfo, setUserInfo] = useState<IUserEntity>({
         name: '',
@@ -20,11 +15,29 @@ export const Header = () => {
     })
 
     useEffect(() => {
-        const accountData: IUserEntity = JSON.parse(localStorage.getItem('userInfo'))
-        if(accountData){
-            setUserInfo(accountData)
+
+        const checkAuth = async () => {
+
+            try {
+
+                const data = await axios.get(
+                    `${import.meta.env.VITE_API_URL}/user/me`,
+                    { withCredentials: true }// разрешает работать браузеру с cookie 
+                ) 
+
+                const payload = data.data.data
+
+                setUserInfo({...userInfo, name: payload.name })
+                
+            } catch (error) {
+                navigate('/')
+            }
+
         }
-    }, [navigate, token])
+
+        checkAuth()
+
+    }, [navigate])
     
 
     return(

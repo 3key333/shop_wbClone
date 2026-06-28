@@ -9,6 +9,31 @@ import { authToken } from "../helpers/helpers.ts";
 
 export const userRouter = Router()
 
+userRouter.get('/me', authToken, async (req: Request, res: Response) => {
+
+    try {
+
+        const payload: {name: string} = res.locals.user
+
+        const { rows } = await pool.query(
+            `SELECT name FROM users
+            WHERE name = $1`,
+            [payload.name]
+        )
+
+        if(!rows.length){
+            res.status(404).send('Пользователь не найден')
+            return
+        }
+
+        res.status(200).json({message: 'полученна информация', data: rows[0]})
+        
+    } catch (error) {
+        res.status(500).send('На сервере произошла ошибка')
+    }
+
+})
+
 userRouter.post('/user_info', async (req: Request<{},{},{name: string}>, res: Response) => {
 
     try {
@@ -60,10 +85,15 @@ userRouter.post('/login', async (req: Request<{},{},{name: string, password: str
             [name]
         )
 
+        if(!rows.length){
+            res.status(401).send('Неверные данные')
+            return
+        }
+
         const hashValidate = await bcrypt.compare(password, rows[0].password_hash)
 
         if(!hashValidate){
-            res.status(404).send('Пользователь не найден')
+            res.status(401).send('Неверные данные')
             return
         }
 
@@ -78,7 +108,7 @@ userRouter.post('/login', async (req: Request<{},{},{name: string, password: str
         // Устанавливаем HttpOnly Cookie
         res.cookie('token', token, {
             httpOnly: true,        // недоступно js
-            secure: true,          // только HTTPS в проде
+            secure: process.env.NODE_ENV === 'production',          // только HTTPS в проде
             sameSite: 'lax',       // csrf защита
             maxAge: 24*60*60*1000  // 24 часа
         })
@@ -135,7 +165,7 @@ userRouter.post('/new_user', async (req: Request<{},{},{name: string, password: 
         // настройка куки токена
         res.cookie('token', token, {
             httpOnly: true,        // недоступно js
-            secure: true,          // только HTTPS в проде
+            secure: process.env.NODE_ENV === 'production',          // только HTTPS в проде
             sameSite: 'lax',       // защита от csrf
             maxAge: 24*60*60*1000  // 24h
         })
@@ -148,7 +178,7 @@ userRouter.post('/new_user', async (req: Request<{},{},{name: string, password: 
 
 })
 
-userRouter.patch('/add_role', async (req: Request<>, res: Response) => {
+userRouter.patch('/add_role', async (req: Request<{},{},{}>, res: Response) => {
 
     try {
 
