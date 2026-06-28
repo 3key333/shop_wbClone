@@ -1,8 +1,12 @@
-import { useState, type ChangeEvent } from 'react'
+import { useState } from 'react'
 import style from './loginPage.module.scss'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 
 export const LoginPage = () => {
+
+    const navigate = useNavigate()
 
     const [isReg, setIsReg] = useState<boolean>(true)
     
@@ -20,7 +24,43 @@ export const LoginPage = () => {
         setUserInfo((prev) => ({...prev, [e.target.name]: e.target.value}))
     }
 
-    console.log(userInfo)
+    const createNewUser = async () => {
+
+        const { data } = await axios.post(
+            `${import.meta.env.VITE_API_URL}/user/new_user`, 
+            {name: userInfo.userName, password: userInfo.password},
+            { withCredentials: true }
+        )
+
+        const userPayload = await axios.post(
+            `${import.meta.env.VITE_API_URL}/user/user_info`,
+            {name: data.data}
+        )
+    
+        localStorage.setItem('userInfo', JSON.stringify(userPayload?.data.data))
+
+        navigate('auth')
+    }
+
+    const loginToAccount = async () => {
+
+        const { data } = await axios.post(
+            `${import.meta.env.VITE_API_URL}/user/login`,
+            {name: userInfo.userName, password: userInfo.password},
+            { withCredentials: true } // разрешает работать браузеру с cookie 
+        )
+
+        const userPayload = await axios.post(
+            `${import.meta.env.VITE_API_URL}/user/user_info`,
+            {name: data.data}
+        )
+
+        console.log(data.data)
+            
+        localStorage.setItem('userInfo', JSON.stringify(userPayload?.data.data))
+    
+        navigate('auth')
+    }
 
 
     return(
@@ -60,7 +100,7 @@ export const LoginPage = () => {
                             </div>
 
                             <div className={style.reg_submitButton}>
-                                <button>создать аккаунт</button>
+                                <button onClick={createNewUser}>создать аккаунт</button>
                             </div>
 
                         </div>
@@ -87,7 +127,7 @@ export const LoginPage = () => {
                                     <input 
                                      name='password'
                                      type="password" 
-                                     placeholder='придумайте пароль'
+                                     placeholder='введите пароль'
                                      onChange={handlerChangeUserInfo}
                                     />
                                 </div>
@@ -95,7 +135,7 @@ export const LoginPage = () => {
                             </div>
 
                             <div className={style.login_submitButton}>
-                                <button>войти</button>
+                                <button onClick={loginToAccount}>войти</button>
                             </div>
 
                         </div>

@@ -3,20 +3,30 @@ import type { Express } from 'express'
 import cors from 'cors'
 import { createServer, Server as HttpServer } from 'http'
 import { Server as SocketServer } from 'socket.io'
+import helmet from 'helmet'
+import cookieParser from 'cookie-parser'
 
 
 
 export const createAppServer = (): {app: Express, httpServer: HttpServer, io: SocketServer} => {
 
     const app = express()
+
     app.use(express.json())
+    app.use(cors({
+        origin: 'http://localhost:5173',
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        credentials: true
+    }))
+    app.use(helmet())
+    app.use(cookieParser())
 
     const httpServer: HttpServer = createServer(app)
 
     const io = new SocketServer(httpServer, {
         cors: {
             origin: 'http://localhost:5173',
-            methods: ['GET', 'POST']
+            methods: ['GET', 'POST', 'PUT', 'DELETE']
         }
     })
 
