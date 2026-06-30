@@ -15,7 +15,7 @@ export const createAppServer = (): {app: Express, httpServer: HttpServer, io: So
     app.use(express.json())
     app.use(cors({
         origin: 'http://localhost:5173',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        methods: ['GET', 'POST', 'PATCH', 'DELETE'],
         credentials: true
     }))
     app.use(helmet())

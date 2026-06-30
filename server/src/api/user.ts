@@ -16,7 +16,7 @@ userRouter.get('/me', authToken, async (req: Request, res: Response) => {
         const payload: {name: string} = res.locals.user
 
         const { rows } = await pool.query(
-            `SELECT name FROM users
+            `SELECT name, role FROM users
             WHERE name = $1`,
             [payload.name]
         )
@@ -178,11 +178,26 @@ userRouter.post('/new_user', async (req: Request<{},{},{name: string, password: 
 
 })
 
-userRouter.patch('/add_role', async (req: Request<{},{},{}>, res: Response) => {
+userRouter.patch('/add_role', authToken ,async (req: Request<{},{},{name: string, role: 'buyer' | 'seller'}>, res: Response) => {
 
     try {
 
-        
+        const { name, role } = req.body
+
+        const validate = name && role && name.trim() !== ''
+
+        if(!validate){
+            return res.status(400).send('Некорректный')
+        }
+
+        await pool.query(
+            `UPDATE users SET
+            role = $1
+            WHERE name = $2`,
+            [role, name]
+        )
+
+        res.status(200).json({message: 'Обновили роль', data: {name, role}})
         
     } catch (error) {
         res.status(500).send('На сервере произошла ошибка')

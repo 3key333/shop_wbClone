@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: shop_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 099lolka08
+      POSTGRES_DB: shop_wbclone
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  redis:
+    image: redis:7-alpine
+    container_name: shop_redis
+    ports:
+      - "6379:6379"
+  server:
+    build: ./server
+    container_name: shop_server
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: 099lolka08
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: shop_wbclone
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 3000
+      JWT_SECRET: jwtsecret123
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+  client:
+    build: ./client
+    container_name: shop_client
+    depends_on:
+      - server
+    ports:
+      - "5173:5173"
+volumes:
+  postgres_data:

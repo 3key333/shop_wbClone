@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import style from './authPage.module.scss'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
@@ -8,16 +8,47 @@ export const AuthPage = () => {
 
     const navigate = useNavigate()
 
-   const token = localStorage.getItem('token')
+    const [userName, setUserName] = useState<string>('')
 
-   if(!token) navigate('/')
+    useEffect(() => {
+
+        const fetchUserName = async () => {
+
+            const { data } = await axios.get(
+                `${import.meta.env.VITE_API_URL}/user/me`,
+                {withCredentials: true}
+            )
+
+            setUserName(data.data.name)
+        }
+
+        fetchUserName()
+
+    }, [navigate])
+
 
     const changeToBuyer = async () => {
+
+        const { data } = await axios.patch(
+            `${import.meta.env.VITE_API_URL}/user/add_role`, 
+            {name: userName, role: 'buyer'}, 
+            {withCredentials: true}
+        )
+
+        navigate('/market')
 
     }
 
     const changeToSeller = async () => {
-        
+
+        const { data } = await axios.patch(
+            `${import.meta.env.VITE_API_URL}/user/add_role`, 
+            {name: userName, role: 'seller'}, 
+            {withCredentials: true}
+        )
+
+        navigate('/market')
+
     }
 
     return(

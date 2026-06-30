@@ -5,5 +5,25 @@ header{
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        .userInfo{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .newProduct_button{
+                margin-left: 20px;
+
+                & > a{
+                    padding: 10px 20px;
+                    background-color: #7e1181;
+                    border: 2px #fff solid;
+                    border-radius: 5px;
+                    cursor: pointer;
+                }
+
+            }
+
+        }
     }
 }
