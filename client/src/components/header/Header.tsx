@@ -1,18 +1,14 @@
 import { useEffect, useState } from 'react'
 import style from './header.module.scss'
 import type { IUserEntity } from '../../types'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, Link } from 'react-router-dom'
+import axios from 'axios'
 
 
 export const Header = () => {
 
     const navigate = useNavigate()
-
-    const token = localStorage.getItem('token')
-
-    if(!token) { 
-        navigate('/')
-    }
+    const location = useLocation()
 
     const [userInfo, setUserInfo] = useState<IUserEntity>({
         name: '',
@@ -20,11 +16,29 @@ export const Header = () => {
     })
 
     useEffect(() => {
-        const accountData: IUserEntity = JSON.parse(localStorage.getItem('userInfo'))
-        if(accountData){
-            setUserInfo(accountData)
+
+        const checkAuth = async () => {
+
+            try {
+
+                const data = await axios.get(
+                    `${import.meta.env.VITE_API_URL}/user/me`,
+                    { withCredentials: true }// разрешает работать браузеру с cookie 
+                ) 
+
+                const payload = data.data.data
+
+                setUserInfo({name: payload.name, role: payload.role })
+                
+            } catch (error) {
+                navigate('/')
+            }
+
         }
-    }, [navigate, token])
+
+        checkAuth()
+
+    }, [navigate])
     
 
     return(
@@ -36,7 +50,16 @@ export const Header = () => {
                 </div>
 
                 <div className={style.userInfo}>
+
                     <p>{userInfo.name ? userInfo.name : ''}</p>
+
+                    <div 
+                        className={style.newProduct_button} 
+                        style={{display: userInfo.role === 'seller' && location.pathname === '/market' ? 'block' : 'none'}}
+                    >
+                        <Link to={'/market/orders'}>мои продукты</Link>
+                    </div>
+
                 </div>
 
             </div>

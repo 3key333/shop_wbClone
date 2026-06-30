@@ -26,39 +26,23 @@ export const LoginPage = () => {
 
     const createNewUser = async () => {
 
-        const { data } = await axios.post(
+        await axios.post(
             `${import.meta.env.VITE_API_URL}/user/new_user`, 
             {name: userInfo.userName, password: userInfo.password},
             { withCredentials: true }
         )
-
-        const userPayload = await axios.post(
-            `${import.meta.env.VITE_API_URL}/user/user_info`,
-            {name: data.data}
-        )
-    
-        localStorage.setItem('userInfo', JSON.stringify(userPayload?.data.data))
-
+        
         navigate('auth')
     }
 
     const loginToAccount = async () => {
 
-        const { data } = await axios.post(
+        await axios.post(
             `${import.meta.env.VITE_API_URL}/user/login`,
             {name: userInfo.userName, password: userInfo.password},
             { withCredentials: true } // разрешает работать браузеру с cookie 
         )
 
-        const userPayload = await axios.post(
-            `${import.meta.env.VITE_API_URL}/user/user_info`,
-            {name: data.data}
-        )
-
-        console.log(data.data)
-            
-        localStorage.setItem('userInfo', JSON.stringify(userPayload?.data.data))
-    
         navigate('auth')
     }
 
