@@ -20,9 +20,12 @@
                     justify-content: space-around;
                     align-items: center;
 
-                    & > button{
+                    & > a{
+                        display: flex;
+                        justify-content: center;
+                        align-content: center;
                         padding: 10px 0px;
-                        width: 100px;
+                        width: 150px;
                         background-color: #ffff0000;
                         border-radius: 5px;
                         border: 2px #fff solid;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import style from './authPage.module.scss'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 
 export const AuthPage = () => {
@@ -35,8 +35,6 @@ export const AuthPage = () => {
             {withCredentials: true}
         )
 
-        navigate('/market')
-
     }
 
     const changeToSeller = async () => {
@@ -46,8 +44,6 @@ export const AuthPage = () => {
             {name: userName, role: 'seller'}, 
             {withCredentials: true}
         )
-
-        navigate('/market')
 
     }
 
@@ -62,9 +58,9 @@ export const AuthPage = () => {
 
                         <div className={style.choise}>
 
-                            <button className={style.buyer} onClick={changeToBuyer}>покупатель</button>
+                            <Link className={style.buyer} onClick={changeToBuyer} to={'/market'}>покупатель</Link>
 
-                            <button className={style.seller} onClick={changeToSeller}>продавец</button>
+                            <Link className={style.seller} onClick={changeToSeller} to={'/market'}>продавец</Link>
 
                         </div>
 
