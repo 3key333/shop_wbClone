@@ -57,7 +57,7 @@ export const Header = () => {
                         className={style.newProduct_button} 
                         style={{display: userInfo.role === 'seller' && location.pathname === '/market' ? 'block' : 'none'}}
                     >
-                        <Link to={'/market/orders'}>мои продукты</Link>
+                        <Link to={'/market/products'}>мои продукты</Link>
                     </div>
 
                 </div>

@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import style from './loginPage.module.scss'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
 export const LoginPage = () => {
@@ -14,6 +14,23 @@ export const LoginPage = () => {
         userName: '',
         password: '',
     })
+
+    useEffect(() => {
+
+        const fetchUserInfo = async () => {
+
+            const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/user/me`, {withCredentials: true})
+
+            if(data?.data?.name.trim() !== ''){
+                navigate('/auth')
+            }
+
+        }
+
+        fetchUserInfo()
+
+    }, [navigate])
+
 
     const handlerClickToChangeReg = () => {
         setIsReg(!isReg)
@@ -31,8 +48,7 @@ export const LoginPage = () => {
             {name: userInfo.userName, password: userInfo.password},
             { withCredentials: true }
         )
-        
-        navigate('auth')
+
     }
 
     const loginToAccount = async () => {
@@ -43,7 +59,6 @@ export const LoginPage = () => {
             { withCredentials: true } // разрешает работать браузеру с cookie 
         )
 
-        navigate('auth')
     }
 
 
@@ -84,7 +99,7 @@ export const LoginPage = () => {
                             </div>
 
                             <div className={style.reg_submitButton}>
-                                <button onClick={createNewUser}>создать аккаунт</button>
+                                <Link onClick={createNewUser} to={'/auth'}>создать аккаунт</Link>
                             </div>
 
                         </div>
@@ -119,7 +134,7 @@ export const LoginPage = () => {
                             </div>
 
                             <div className={style.login_submitButton}>
-                                <button onClick={loginToAccount}>войти</button>
+                                <Link onClick={loginToAccount} to={'/auth'}>войти</Link>
                             </div>
 
                         </div>
