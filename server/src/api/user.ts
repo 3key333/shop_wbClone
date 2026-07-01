@@ -16,7 +16,7 @@ userRouter.get('/me', authToken, async (req: Request, res: Response) => {
         const payload: {name: string} = res.locals.user
 
         const { rows } = await pool.query(
-            `SELECT name, role FROM users
+            `SELECT name, role, id FROM users
             WHERE name = $1`,
             [payload.name]
         )
