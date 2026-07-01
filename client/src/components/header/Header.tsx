@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import style from './header.module.scss'
-import type { IUserEntity } from '../../types'
+import type { IUserEntity } from '../../types.ts'
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
 

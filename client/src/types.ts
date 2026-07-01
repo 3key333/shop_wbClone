@@ -4,3 +4,9 @@ export interface IUserEntity {
     password_hash?: string;
     role: string | null;
 }
+
+export interface NewProductForm {
+    name: string;
+    text: string;
+    price: string;
+}

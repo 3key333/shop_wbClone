@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import { initDataBase } from './src/db/pool.ts'
 import { createAppServer, startServer } from './src/server.ts'
 import { userRouter } from './src/api/user.ts'
+import { productsRouter } from './src/api/products.ts'
 
 
 dotenv.config({path: '../.env'})
@@ -14,6 +15,7 @@ const startApp = async () => {
         const { app, httpServer, io } = createAppServer() 
 
         app.use('/api/user', userRouter)
+        app.use('/api/products', productsRouter)
 
         startServer(httpServer)
         

@@ -29,7 +29,7 @@ export const AuthPage = () => {
 
     const changeToBuyer = async () => {
 
-        const { data } = await axios.patch(
+        await axios.patch(
             `${import.meta.env.VITE_API_URL}/user/add_role`, 
             {name: userName, role: 'buyer'}, 
             {withCredentials: true}
@@ -39,7 +39,7 @@ export const AuthPage = () => {
 
     const changeToSeller = async () => {
 
-        const { data } = await axios.patch(
+        await axios.patch(
             `${import.meta.env.VITE_API_URL}/user/add_role`, 
             {name: userName, role: 'seller'}, 
             {withCredentials: true}
