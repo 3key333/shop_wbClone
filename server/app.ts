@@ -3,6 +3,7 @@ import { initDataBase } from './src/db/pool.ts'
 import { createAppServer, startServer } from './src/server.ts'
 import { userRouter } from './src/api/user.ts'
 import { productsRouter } from './src/api/products.ts'
+import { initRedis } from './src/db/redis.ts'
 
 
 dotenv.config({path: '../.env'})
@@ -12,6 +13,7 @@ const startApp = async () => {
     try {
 
         await initDataBase()
+        await initRedis()
         const { app, httpServer, io } = createAppServer() 
 
         app.use('/api/user', userRouter)
