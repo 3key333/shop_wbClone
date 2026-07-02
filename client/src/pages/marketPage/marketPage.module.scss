@@ -1,0 +1,37 @@
+.market{
+    .marketInner{
+
+        .products_grid{
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 20px;
+
+            .product_card{
+                display: block;
+                border: 2px #7e1181 solid;
+                border-radius: 5px;
+                padding: 10px;
+
+                & > h2{
+                    text-align: center;
+                    color: #7e1181;
+                }
+
+                & > p{
+                    text-align: center;
+                    margin-top: 10px;
+                    color: #7e1181;
+                }
+
+                & > span{
+                    display: block;
+                    text-align: center;
+                    margin-top: 10px;
+                    color: #7e1181;
+                }
+            }
+        }
+
+    }
+}

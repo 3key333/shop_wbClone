@@ -1,16 +1,7 @@
 import type { Request, Response, NextFunction } from "express"
 import jwt from 'jsonwebtoken'
+import { NewProduct } from "../../types"
 
-export const validateNewUserRequestBody = (data: {name: string, password: string}) => {
-
-    const validate = data.name && data.password &&
-    data.name.trim() !== '' && data.password.trim() !== ''
-
-    if(validate) return true
-
-    return false
-
-}
 
 export const authToken = (req: Request, res: Response, next: NextFunction) => {
 
@@ -30,5 +21,26 @@ export const authToken = (req: Request, res: Response, next: NextFunction) => {
     } catch (error) {
         res.status(401).send('Невалидный или просроченный токен')
     }
+
+}
+
+export const validateNewUserRequestBody = (data: {name: string, password: string}) => {
+
+    const validate = data.name && data.password &&
+    data.name.trim() !== '' && data.password.trim() !== ''
+
+    if(validate) return true
+
+    return false
+
+}
+
+export const validateNewProduct = (data: NewProduct) => {
+
+    const validate = data.name &&
+    data.text && data.user_id && data.price && data.name.trim() !== '' &&
+    data.text.trim() !== '' && data.user_id !== '' && Number(data.price) > 0
+
+    return validate
 
 }

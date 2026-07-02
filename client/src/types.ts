@@ -10,3 +10,14 @@ export interface NewProductForm {
     text: string;
     price: string;
 }
+
+export interface NewProductRequest{
+    user_id: string;
+    name: string;
+    text: string;
+    price: number;
+}
+
+export interface IProductEntity extends NewProductRequest {
+    id: string;
+}
