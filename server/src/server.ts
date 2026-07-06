@@ -32,6 +32,12 @@ export const createAppServer = (): {app: Express, httpServer: HttpServer, io: So
 
     io.on('connection', (socket) => {
         console.log('пользователь подключился')
+
+        socket.on('join_room', (data: string) => {
+            socket.join('1')
+            console.log(`пользователь ${data} подключился`)
+        })
+        
     })
 
     return { app, httpServer, io }

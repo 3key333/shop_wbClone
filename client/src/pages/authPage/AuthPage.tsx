@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import style from './authPage.module.scss'
 import axios from 'axios'
 import { useNavigate, Link } from 'react-router-dom'
+import { io, type Socket } from 'socket.io-client'
 
 
 export const AuthPage = () => {
@@ -9,6 +10,8 @@ export const AuthPage = () => {
     const navigate = useNavigate()
 
     const [userName, setUserName] = useState<string>('')
+
+    const socketRef = useRef<Socket | null>(null)
 
     useEffect(() => {
 
@@ -25,6 +28,22 @@ export const AuthPage = () => {
         fetchUserName()
 
     }, [navigate])
+
+    useEffect(() => {
+
+        if(!userName) return 
+
+        const newSocket = io('http://localhost:3000')
+        socketRef.current = newSocket
+
+        newSocket.emit('join_room', userName)
+
+        return () => {
+            newSocket.disconnect()
+            socketRef.current = null
+        }
+
+    }, [userName])
 
 
     const changeToBuyer = async () => {
