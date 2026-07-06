@@ -3,6 +3,7 @@ import { getUserInfo, getUserProducts } from "../thunk/userInfo.ts";
 import { createProduct } from "../thunk/products.ts";
 import type { IProductEntity } from "../../types.ts";
 
+
 interface UserSliceState {
     id: string;
     name: string;
@@ -25,6 +26,7 @@ const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
+
     },
     extraReducers: (builder) => {
         builder

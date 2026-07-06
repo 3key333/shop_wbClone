@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import style from './authPage.module.scss'
 import axios from 'axios'
 import { useNavigate, Link } from 'react-router-dom'
-import { io, type Socket } from 'socket.io-client'
+import { useDispatch } from 'react-redux'
+import type { AppDispatch } from '../../redux/store.ts'
+import { socket } from '../../socket.ts'
 
 
 export const AuthPage = () => {
@@ -11,7 +13,7 @@ export const AuthPage = () => {
 
     const [userName, setUserName] = useState<string>('')
 
-    const socketRef = useRef<Socket | null>(null)
+    const dispatch = useDispatch<AppDispatch>()
 
     useEffect(() => {
 
@@ -31,17 +33,9 @@ export const AuthPage = () => {
 
     useEffect(() => {
 
-        if(!userName) return 
+        if(!userName) return
 
-        const newSocket = io('http://localhost:3000')
-        socketRef.current = newSocket
-
-        newSocket.emit('join_room', userName)
-
-        return () => {
-            newSocket.disconnect()
-            socketRef.current = null
-        }
+        socket.emit('join_room')
 
     }, [userName])
 

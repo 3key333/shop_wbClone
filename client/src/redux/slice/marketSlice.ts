@@ -18,6 +18,10 @@ const marketSlice = createSlice({
     initialState,
     reducers: {
 
+        addProduct: (state, action) => {
+            state.products.push(action.payload)
+        }
+
     },
     extraReducers: (builder) => {
         builder
@@ -39,3 +43,6 @@ const marketSlice = createSlice({
 })
 
 export default marketSlice.reducer
+export const {
+    addProduct
+} = marketSlice.actions

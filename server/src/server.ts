@@ -8,6 +8,8 @@ import cookieParser from 'cookie-parser'
 
 
 
+export let io: SocketServer
+
 export const createAppServer = (): {app: Express, httpServer: HttpServer, io: SocketServer} => {
 
     const app = express()
@@ -23,7 +25,7 @@ export const createAppServer = (): {app: Express, httpServer: HttpServer, io: So
 
     const httpServer: HttpServer = createServer(app)
 
-    const io = new SocketServer(httpServer, {
+    io = new SocketServer(httpServer, {
         cors: {
             origin: 'http://localhost:5173',
             methods: ['GET', 'POST', 'PUT', 'DELETE']
