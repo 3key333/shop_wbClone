@@ -8,6 +8,8 @@ import cookieParser from 'cookie-parser'
 
 
 
+export let io: SocketServer
+
 export const createAppServer = (): {app: Express, httpServer: HttpServer, io: SocketServer} => {
 
     const app = express()
@@ -23,7 +25,7 @@ export const createAppServer = (): {app: Express, httpServer: HttpServer, io: So
 
     const httpServer: HttpServer = createServer(app)
 
-    const io = new SocketServer(httpServer, {
+    io = new SocketServer(httpServer, {
         cors: {
             origin: 'http://localhost:5173',
             methods: ['GET', 'POST', 'PUT', 'DELETE']
@@ -32,6 +34,12 @@ export const createAppServer = (): {app: Express, httpServer: HttpServer, io: So
 
     io.on('connection', (socket) => {
         console.log('пользователь подключился')
+
+        socket.on('join_room', (data: string) => {
+            socket.join('1')
+            console.log(`пользователь ${data} подключился`)
+        })
+        
     })
 
     return { app, httpServer, io }

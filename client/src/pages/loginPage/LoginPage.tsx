@@ -49,6 +49,8 @@ export const LoginPage = () => {
             { withCredentials: true }
         )
 
+        navigate('/auth')
+
     }
 
     const loginToAccount = async () => {
@@ -58,6 +60,8 @@ export const LoginPage = () => {
             {name: userInfo.userName, password: userInfo.password},
             { withCredentials: true } // разрешает работать браузеру с cookie 
         )
+
+        navigate('/auth')
 
     }
 
@@ -99,7 +103,7 @@ export const LoginPage = () => {
                             </div>
 
                             <div className={style.reg_submitButton}>
-                                <Link onClick={createNewUser} to={'/auth'}>создать аккаунт</Link>
+                                <button onClick={createNewUser}>создать аккаунт</button>
                             </div>
 
                         </div>
@@ -134,7 +138,7 @@ export const LoginPage = () => {
                             </div>
 
                             <div className={style.login_submitButton}>
-                                <Link onClick={loginToAccount} to={'/auth'}>войти</Link>
+                                <button onClick={loginToAccount}>войти</button>
                             </div>
 
                         </div>

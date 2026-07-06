@@ -1,7 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import style from './authPage.module.scss'
 import axios from 'axios'
 import { useNavigate, Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import type { AppDispatch } from '../../redux/store.ts'
+import { socket } from '../../socket.ts'
 
 
 export const AuthPage = () => {
@@ -9,6 +12,8 @@ export const AuthPage = () => {
     const navigate = useNavigate()
 
     const [userName, setUserName] = useState<string>('')
+
+    const dispatch = useDispatch<AppDispatch>()
 
     useEffect(() => {
 
@@ -25,6 +30,14 @@ export const AuthPage = () => {
         fetchUserName()
 
     }, [navigate])
+
+    useEffect(() => {
+
+        if(!userName) return
+
+        socket.emit('join_room')
+
+    }, [userName])
 
 
     const changeToBuyer = async () => {

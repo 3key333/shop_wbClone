@@ -4,6 +4,7 @@ import { pool } from "../db/pool.ts";
 import { authToken, validateNewProduct } from "../helpers/helpers.ts";
 import { NewProduct } from "../../types.ts";
 import { redisClient } from "../db/redis.ts";
+import { io } from "../server.ts";
 
 export const productsRouter = Router()
 
@@ -92,7 +93,9 @@ productsRouter.post('/create_new_product', authToken, async (req: Request<{},{},
             [user_id, name, text, price]
         )
 
-        await redisClient.del('product:all')
+        await redisClient.del('products:all')
+
+        io.emit('new_product', rows[0])
 
         res.status(201).json({message: 'Создан новый продукт', data: rows[0]})
         

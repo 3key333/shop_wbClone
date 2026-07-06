@@ -19,7 +19,7 @@ export const ProductsPage = () => {
         dispatch(getUserInfo())
     }, [navigate])
 
-    const { id, name, role, isLoading, products, error } = useSelector((state: RootState) => state.user)
+    const { id, isLoading, products} = useSelector((state: RootState) => state.user)
 
     const [newProductForm, setNewProductForm] = useState<NewProductForm>({
         name: '',
