@@ -8,6 +8,29 @@ import { io } from "../server.ts";
 
 export const productsRouter = Router()
 
+productsRouter.get('/product/:id', authToken, async (req: Request<{id:string}>, res: Response) => {
+
+    try {
+
+        const { id } = req.params
+
+        if(!id || id.trim() === ''){
+            return res.status(400).send('Некорректные данные')
+        }
+
+        const { rows } = await pool.query(
+            `SELECT * FROM products
+            WHERE id = $1`,
+            [id]
+        )
+
+        res.status(200).json({message: 'Получены данные о товаре', data: rows[0]})
+        
+    } catch (error) {
+        res.status(500).send('На сервере произошла ошибка')
+    }
+
+})
 
 productsRouter.get('/user/:id', authToken ,async (req: Request<{id: string}>, res: Response) => {
     try {
@@ -103,5 +126,32 @@ productsRouter.post('/create_new_product', authToken, async (req: Request<{},{},
         res.status(500).send('На сервере произошла ошибка')
     }
 
+})
+
+productsRouter.delete('/product/:id', authToken, async (req: Request<{id: string}>, res: Response) => {
+    
+    try {
+        
+        const { id } = req.params
+
+        if(!id || id.trim() === ''){
+            return res.status(400).send('Некорректные данные')
+        }
+
+        await pool.query(
+            `DELETE FROM products
+            WHERE id = $1`,
+            [id]
+        )
+
+        await redisClient.del('products:all')
+
+        io.emit('delete_product', id)
+
+        res.status(200).send(`Удалили продукт ${id}`)
+        
+    } catch (error) {
+        res.status(500).send('На сервере произошла ошибка')
+    }
 })
 

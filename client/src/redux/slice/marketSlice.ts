@@ -20,6 +20,10 @@ const marketSlice = createSlice({
 
         addProduct: (state, action) => {
             state.products.push(action.payload)
+        },
+
+        removeProduct: (state, action) => {
+            state.products = state.products.filter(product => product.id !== action.payload)
         }
 
     },
@@ -44,5 +48,6 @@ const marketSlice = createSlice({
 
 export default marketSlice.reducer
 export const {
-    addProduct
+    addProduct,
+    removeProduct
 } = marketSlice.actions

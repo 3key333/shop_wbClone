@@ -1,0 +1,29 @@
+.ProductInfoPage{
+    height: 100%;
+    .ProductInfoPageInner{
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .productCard{
+            flex-direction: column;
+            display: flex;
+            gap: 20px;
+
+            & > button{
+                padding: 10px 5px;
+                background-color: #ffff0000;
+                border: 2px #7e1181 solid;
+                border-radius: 5px;
+                color: #7e1181;
+                cursor: pointer;
+            }
+
+            & > p,h2{
+                color: #7e1181;
+                text-align: center;
+            }
+        }
+    }
+}
