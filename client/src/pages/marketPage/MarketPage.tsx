@@ -14,7 +14,7 @@ export const MarketPage = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
 
-    const { role } = useSelector((state: RootState) => state.user)
+    const { role, id } = useSelector((state: RootState) => state.user)
 
     useEffect(() => {
         dispatch(getUserInfo())
@@ -41,9 +41,12 @@ export const MarketPage = () => {
 
     }, [dispatch])
 
-    const redirectToProduct = (id: string) => {
-        if(role === 'seller') navigate(`/product/${id}`)
-        return
+    const redirectToProduct = (productId: string, sellerId: string) => {
+        if(role === 'seller' && id === sellerId){
+            navigate(`/product/${productId}`)
+        }else{
+            alert('это не ваш продукт')
+        }
     }
 
     const { products } = useSelector((state: RootState) => state.market)
@@ -54,7 +57,7 @@ export const MarketPage = () => {
                 
                 <div className={style.products_grid}>
                     {products.map((product) => (
-                        <div className={style.product_card} key={product.id} onClick={() => redirectToProduct(product.id)}>
+                        <div className={style.product_card} key={product.id} onClick={() => redirectToProduct(product.id, product.user_id)}>
                             <h2>{product.name}</h2>
                             <p>{product.text}</p>
                             <span>{product.price} ₽</span>
