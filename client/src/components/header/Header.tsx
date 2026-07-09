@@ -3,12 +3,16 @@ import style from './header.module.scss'
 import type { IUserEntity } from '../../types.ts'
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
+import { useSelector } from 'react-redux'
+import type { RootState } from '../../redux/store.ts'
 
 
 export const Header = () => {
 
     const navigate = useNavigate()
     const location = useLocation()
+
+    const { cart } = useSelector((state: RootState) => state.user)
 
     const [userInfo, setUserInfo] = useState<IUserEntity>({
         name: '',
@@ -39,7 +43,7 @@ export const Header = () => {
         checkAuth()
 
     }, [navigate])
-    
+
 
     return(
         <header>
@@ -50,6 +54,10 @@ export const Header = () => {
                 </div>
 
                 <div className={style.userInfo}>
+
+                    <div className={style.cart}>
+                        <p>Товаров в корзине: {cart.length}</p>
+                    </div>
 
                     <p>{userInfo.name ? userInfo.name : ''}</p>
 

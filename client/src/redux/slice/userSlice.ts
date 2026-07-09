@@ -10,6 +10,7 @@ interface UserSliceState {
     role: string;
     isLoading: boolean;
     products: IProductEntity[];
+    cart: IProductEntity[];
     error: string | null;
 }
 
@@ -19,6 +20,7 @@ const initialState: UserSliceState = {
     role: '',
     isLoading: false,
     products: [],
+    cart: [],
     error: null,
 }
 
@@ -26,6 +28,14 @@ const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
+
+        addProductToCart: (state, action) => {
+            state.cart.push(action.payload)
+        },
+
+        deleteProductToCart: (state, action) => {
+            state.cart = state.cart.filter(product => product.id !== action.payload.id)
+        }
 
     },
     extraReducers: (builder) => {
@@ -61,3 +71,7 @@ const userSlice = createSlice({
 
 
 export default userSlice.reducer
+export const { 
+    addProductToCart,
+    deleteProductToCart
+} = userSlice.actions
