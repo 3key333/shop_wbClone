@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express"
 import jwt from 'jsonwebtoken'
-import { NewProduct } from "../../types"
+import { IProductEntity, NewProduct } from "../../types"
 
 
 export const authToken = (req: Request, res: Response, next: NextFunction) => {
@@ -40,6 +40,16 @@ export const validateNewProduct = (data: NewProduct) => {
     const validate = data.name &&
     data.text && data.user_id && data.price && data.name.trim() !== '' &&
     data.text.trim() !== '' && data.user_id !== '' && Number(data.price) > 0
+
+    return validate
+
+}
+
+export const validateUpdateProduct = (data: IProductEntity) => {
+
+    const validate = data.id && data.user_id &&
+    data.name && data.text && data.price && data.name.trim() !== '' && 
+    data.text.trim() !== '' && Number(data.price) > 0
 
     return validate
 

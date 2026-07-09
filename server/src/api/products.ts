@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 import { Router } from "express";
 import { pool } from "../db/pool.ts";
-import { authToken, validateNewProduct } from "../helpers/helpers.ts";
-import { NewProduct } from "../../types.ts";
+import { authToken, validateNewProduct, validateUpdateProduct } from "../helpers/helpers.ts";
+import { IProductEntity, NewProduct } from "../../types.ts";
 import { redisClient } from "../db/redis.ts";
 import { io } from "../server.ts";
 
@@ -128,6 +128,66 @@ productsRouter.post('/create_new_product', authToken, async (req: Request<{},{},
 
 })
 
+productsRouter.patch('/update_product', authToken, async (req: Request<{},{},IProductEntity>, res: Response) => {
+
+    try {
+
+        const { id, user_id, name, text, price } = req.body
+        const user_name: string = res.locals.user.name
+
+        const validate = validateUpdateProduct(req.body)
+
+        if(!validate){
+            return res.status(400).send('Некорректный запрос')
+        }
+
+        const user = await pool.query(
+            `SELECT name FROM users
+            WHERE id = $1`,
+            [user_id]
+        )
+
+        if(!user.rows[0] || user.rows[0].name !== user_name){
+            return res.status(403).send('Нет прав на изменение этого товара')
+        }
+
+        const { rows: me } = await pool.query(
+            `SELECT id FROM users
+            WHERE name = $1`,
+            [user_name]
+        )
+
+        const myId = me[0].id
+
+        const result = await pool.query(
+            `UPDATE products
+            SET name = $1, text = $2, price = $3
+            WHERE id = $4 AND user_id = $5`,
+            [name, text, price, id, myId]
+        )
+
+        if(result.rowCount === 0){
+            return res.status(404).send('Товар не найден или не принадлежит вам')
+        }
+
+        await redisClient.del('products:all')
+
+        const { rows } = await pool.query(
+            `SELECT * FROM products
+            WHERE id = $1`,
+            [id]
+        )
+
+        io.emit('update_product', rows[0])
+        
+        res.status(200).send(`Обновили продукт ${id}`)
+
+    } catch (error) {
+        res.status(500).send('На сервере произошла ошибка')
+    }
+
+})
+
 productsRouter.delete('/product/:id', authToken, async (req: Request<{id: string}>, res: Response) => {
     
     try {
@@ -154,4 +214,6 @@ productsRouter.delete('/product/:id', authToken, async (req: Request<{id: string
         res.status(500).send('На сервере произошла ошибка')
     }
 })
+
+
 

@@ -24,6 +24,8 @@ export const ProductInfoPage = () => {
         price: 0,
     })
 
+
+
     useEffect(() => {
 
         if (!id) return
@@ -54,17 +56,66 @@ export const ProductInfoPage = () => {
         navigate('/market')
     }
 
+    const changeProductInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setProduct((prev) => ({...prev, [e.target.name]: e.target.value}))
+    }
+
+    const changeProductTextarea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setProduct((prev) => ({...prev, [e.target.name]: e.target.value}))
+    }
+
+    const updateProduct = async () => {
+
+        await axios.patch(
+            `${import.meta.env.VITE_API_URL}/products/update_product`, 
+            { 
+                id: product.id,
+                user_id: product.user_id,
+                name: product.name,
+                text: product.text,
+                price: Number(product.price),
+            },
+            { withCredentials: true }
+        )
+
+        dispatch(getAllProducts())
+
+        navigate('/market')
+        
+    }
+
     return(
         <section className={style.ProductInfoPage}>
             <div className={style.ProductInfoPageInner}>
 
                 <div className={style.productCard}>
 
-                    <h2>{product?.name ?? null}</h2>
+                    <input
+                     name='name' 
+                     type="text" 
+                     placeholder='название' 
+                     value={product.name}
+                     onChange={(e) => changeProductInput(e)}
+                    />
+                    
+                    <textarea
+                     name='text' 
+                     placeholder='описание' 
+                     value={product.text}
+                     onChange={(e) => changeProductTextarea(e)}
+                    />
 
-                    <p>{String(product?.price ?? null )}</p>
+                    <input 
+                     name='price'
+                     type="text" 
+                     placeholder='цена' 
+                     value={product.price}
+                     onChange={(e) => changeProductInput(e)}
+                    />
 
                     <button onClick={deleteProduct}>удалить</button>
+
+                    <button onClick={updateProduct}>обновить</button>
 
                 </div>
 
