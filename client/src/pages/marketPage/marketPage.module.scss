@@ -31,6 +31,22 @@
                     margin-top: 10px;
                     color: #7e1181;
                 }
+
+                .buy_btn{
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 5px;
+                    & > button{
+                        width: 100%;
+                        padding: 5px 0px;
+                        color: #7e1181;
+                        background-color: #ffff0000;
+                        border: 2px #7e1181 solid;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    }
+                }
+
             }
         }
 

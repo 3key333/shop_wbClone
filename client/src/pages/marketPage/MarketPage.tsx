@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router-dom'
 import style from './marketPage.module.scss'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getUserInfo } from '../../redux/thunk/userInfo.ts'
 import { useDispatch, useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '../../redux/store.ts'
 import { getAllProducts } from '../../redux/thunk/products.ts'
 import { addProduct, removeProduct } from '../../redux/slice/marketSlice.ts'
 import { socket } from '../../socket.ts'
+import { addProductToCart, deleteProductToCart } from '../../redux/slice/userSlice.ts'
+import type { IProductEntity } from '../../types.ts'
 
 
 export const MarketPage = () => {
@@ -14,7 +16,8 @@ export const MarketPage = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
 
-    const { role, id } = useSelector((state: RootState) => state.user)
+    const { role, id, cart } = useSelector((state: RootState) => state.user)
+    const { products } = useSelector((state: RootState) => state.market)
 
     useEffect(() => {
         dispatch(getUserInfo())
@@ -49,7 +52,17 @@ export const MarketPage = () => {
         }
     }
 
-    const { products } = useSelector((state: RootState) => state.market)
+    const addToCart = (product: IProductEntity) => {
+        const find = cart.find( el => el.id === product.id)
+
+        if(!find){
+            dispatch(addProductToCart(product))
+        }else{
+            dispatch(deleteProductToCart(product))
+        }
+
+    }
+    
 
     return(
         <section className={style.market}>
@@ -57,10 +70,23 @@ export const MarketPage = () => {
                 
                 <div className={style.products_grid}>
                     {products.map((product) => (
-                        <div className={style.product_card} key={product.id} onClick={() => redirectToProduct(product.id, product.user_id)}>
+                        <div className={style.product_card} key={product.id} onClick={role === 'seller' ? () => redirectToProduct(product.id, product.user_id) : null}>
+
                             <h2>{product.name}</h2>
                             <p>{product.text}</p>
                             <span>{product.price} ₽</span>
+
+                            <div className={style.buy_btn}>
+                                <button
+                                 onClick={(e) => {
+                                    e.stopPropagation()
+                                    addToCart(product)
+                                 }}
+                                >
+                                    {cart.some(el => el.id === product.id) ? 'в корзине' : 'купить'}
+                                </button>
+                            </div>
+
                         </div>
                     ))}
                 </div>
