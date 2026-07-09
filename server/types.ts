@@ -4,3 +4,7 @@ export interface NewProduct {
     text: string;
     price: number;
 }
+
+export interface IProductEntity extends NewProduct {
+    id: string
+}

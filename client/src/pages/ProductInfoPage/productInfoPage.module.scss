@@ -20,9 +20,16 @@
                 cursor: pointer;
             }
 
-            & > p,h2{
+            & > textarea{
                 color: #7e1181;
-                text-align: center;
+                padding-left: 5px;
+                height: 100px;
+            }
+
+            & > input{
+                color: #7e1181;
+                padding-left: 5px;
+                height: 25px;
             }
         }
     }
