@@ -37,9 +37,14 @@ export const MarketPage = () => {
             dispatch(removeProduct(data))
         })
 
+        socket.on('update_product', () => {
+            dispatch(getAllProducts())
+        })
+
         return () => {
             socket.off('new_product')
             socket.off('delete_product')
+            socket.off('update_product')
         }
 
     }, [dispatch])

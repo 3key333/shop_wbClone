@@ -172,13 +172,7 @@ productsRouter.patch('/update_product', authToken, async (req: Request<{},{},IPr
 
         await redisClient.del('products:all')
 
-        const { rows } = await pool.query(
-            `SELECT * FROM products
-            WHERE id = $1`,
-            [id]
-        )
-
-        io.emit('update_product', rows[0])
+        io.emit('update_product')
         
         res.status(200).send(`Обновили продукт ${id}`)
 
